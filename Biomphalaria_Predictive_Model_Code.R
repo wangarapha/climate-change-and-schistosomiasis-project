@@ -8,11 +8,9 @@ library(terra)         # For handling spatial and raster data
 library(tidyverse)     # For data manipulation and visualization
 library(dismo)         # For species distribution modeling
 library(raster)        # For raster data manipulation
-library(gbm)           # For generalized boosted regression modeling
 library(randomForest)  # For random forest modeling
 library(xgboost)       # For extreme gradient boosting
 library(mlr3)          # For machine learning workflows
-library(earth)         # For multivariate adaptive regression splines (MARS)
 library(maxnet)        # For MaxEnt species distribution modeling
 library(pROC)          # For ROC curve analysis
 library(caret)         # For training and testing machine learning models
@@ -33,7 +31,7 @@ occurrence <- occurrence[, c("longitude", "latitude")]
 #Load all the environmental adata raster files
 env_files <- list.files(env_variables_path, pattern = "\\.tif$", full.names = TRUE)
 
-#------------------------------------------Align and resample environmental raster files------------------------ 
+#------------------------------------------ Align and resample environmental raster files ------------------------ 
 # set the first raster as a reference for extent and resolution
 ref_raster <- rast(env_files[1])
 # Function to check extents and reproject if necessary
@@ -67,7 +65,7 @@ env_layers <- rast(aligned_rasters)
 
 # Check the final stack
 print(env_layers)
-#-----Convert occurrence data to a SpatVector and align with environmental layers----
+############### Convert occurrence data to a SpatVector and align with environmental layers ################
 #Ensure occurrence data is a data frame with longitude  and latitude  columns:
 # Convert occurrence data to a SpatVector
 occ_vector <- vect(occurrence, geom = c("longitude", "latitude"), crs = crs(env_layers))
@@ -116,11 +114,8 @@ if (!same.crs(occ_vector, env_layers)) {
   
 # Visualize occurrence and pseudoabsence points
 plot(env_layers[[1]], main = "Occurrence and Pseudoabsence Points")
-
 points(occ_vector, col = "blue", pch = 20, cex = 1.5)
-
 points(pseudoabsence_points, col = "red", pch = 20, cex = 1.5)
-
 print(pseudoabsence_points)
 
 #----------------------------------Combine presence and pseudoabsence data----------------------------------
