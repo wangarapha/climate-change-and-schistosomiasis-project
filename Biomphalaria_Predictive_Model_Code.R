@@ -2,7 +2,7 @@
 
 #Climate change drives small scale changes in snail habitat suitability and Schistosomiasis Risk in the Lake Victoria Basin in Sub-Saharan Africa
 
-#---------------------------------Load necessary libraries---------------------------
+#-------------------------------------------------Load necessary libraries-------------------------------------------
 # Load necessary libraries
 library(terra)         # For handling spatial and raster data
 library(tidyverse)     # For data manipulation and visualization
@@ -20,12 +20,12 @@ library(biomod2)       # For ensemble species distribution modeling
 library(ggplot2)       # For advanced visualization
 library(gridExtra)     # For arranging multiple plots on a grid
 
-#----------------Set working directories--------------------------------------------
+#--------------------------------------Set working directories--------------------------------------------------
 # Set working directories
 occurrence_points_path <- "C:/Users/DELL/Documents/Schist_Points/Biom_Points.csv"
 env_variables_path <- "F:/Current_EVs"
 
-#-----------Load occurrence data and enverionmental variables data------------
+#--------------------------------Load occurrence data and enverionmental variables data-------------------------
 # Load occurrence points
 occurrence <- read.csv(occurrence_points_path)
 occurrence <- occurrence[, c("longitude", "latitude")]
@@ -33,7 +33,7 @@ occurrence <- occurrence[, c("longitude", "latitude")]
 #Load all the environmental adata raster files
 env_files <- list.files(env_variables_path, pattern = "\\.tif$", full.names = TRUE)
 
-#------------------Align and resample environmental raster files-------------------- 
+#------------------------------------------Align and resample environmental raster files------------------------ 
 # set the first raster as a reference for extent and resolution
 ref_raster <- rast(env_files[1])
 # Function to check extents and reproject if necessary
@@ -79,7 +79,7 @@ if (!same.crs(occ_vector, env_layers)) {
   cat("Reprojected occurrence points to match CRS of the environmental layers.\n")
 }
 
-#----------------------------Generate Pseudoabsence points---------------------------
+#-----------------------------------------------Generate Pseudoabsence points----------------------------------
 # Function to generate pseudoabsence points using the surface-range envelope method
 # Extract environmental data for presence points
   occ_env_data <- extract(env_layers, occ_vector)
@@ -107,7 +107,7 @@ if (!same.crs(occ_vector, env_layers)) {
   plot(unsuitable_area, main = "Unsuitable Area")
   
 # Generate random points within the unsuitable area
-  pseudoabsence_points <- spatSample(unsuitable_area, size = 700, method = "random", na.rm = TRUE, xy = TRUE)
+  pseudoabsence_points <- spatSample(unsuitable_area, size = 500, method = "random", na.rm = TRUE, xy = TRUE)
   
   Print (pseudoabsence_points)
   
@@ -123,7 +123,7 @@ points(pseudoabsence_points, col = "red", pch = 20, cex = 1.5)
 
 print(pseudoabsence_points)
 
-#---------------Combine presence and pseudoabsence data------------------------------
+#----------------------------------Combine presence and pseudoabsence data----------------------------------
 # Create the presence data frame from occurrence points with lat, lon and presence = 1 column
 presence_data <- data.frame(lon = occurrence$longitude, lat = occurrence$latitude, presence = 1)
 # Check the presence data frame
@@ -149,7 +149,7 @@ presence_absence %>%
   geom_point(alpha=1, )+
   theme_bw()
 
-# ------------------Prepare data for XGBoost, RF and Maxent, model runs-------------- 
+# -------------------------------Prepare data for XGBoost, RF and Maxent, model runs--------------------------- 
 
 # Conditional function to handle NA values in raster layers
 handle_na <- function(presence_absence, env_layers) {
@@ -163,7 +163,7 @@ evaluate_model <- function(model, test_data, predictions) {
   return(auc_val)
 }
 
-# ----------------------------1. XGBoost Model Analysis------------------------------
+###################################### 1. XGBoost Model Trainin & Analysis ##################################
 # Initialize lists to store results
 aucs <- c()
 rasters <- list(XGBoost = list())
@@ -260,7 +260,7 @@ for (i in 1:25) {
   rasters[["XGBoost"]] <- append(rasters[["XGBoost"]], list(xgb_raster))
   model_results[["XGBoost"]] <- append(model_results[["XGBoost"]], auc_xgb)
 }
-# ---------------------------2. Random Forest Model analysis-------------------------------
+#################################### 2. Random Forest Model training & analysis ############################
 # Initialize lists to store results
 model_results <- list(RF = list())
 rasters <- list(RF = list())
@@ -349,7 +349,7 @@ print(average_rf_auc)
 # Print final average AUC
 cat("Average AUC across iterations:", mean(aucs, na.rm = TRUE), "\n")
 
-#---------------------------------- 3. Maxent Model analysis-------------------------
+##################################### 3. Maxent Model training & analysis ##############################
 # Load environmental variables as spatraster
 # List all .tif files
 tif_files <- list.files(path = "F:/Current_EVs", pattern = "\\.tif$", full.names = TRUE)
@@ -513,7 +513,7 @@ for (i in 1:25) {
 average_maxent_auc <- mean(aucs, na.rm = TRUE)
 print(paste("Average Maxent AUC:", average_maxent_auc))
 
-#--------------------------------Model Combination/ensemble----------------------------
+#----------------------------------------Model Combination/ensembling--------------------------------------
 # Placeholder for model results (AUCs from previous runs)
 models <- list(
   xgboost = xgb_model,
@@ -576,7 +576,7 @@ cat("\nModel weights (based on mean AUCs):\n")
 print(model_weights)
 cat("\nCombined model prediction saved as 'combined_model_prediction_XGB_F.tif'\n")
 
-#--------------------------Crossvalidation variable importance----------------------------
+#---------------------------------------Crossvalidation variable importance---------------------------------------
 # Function for cross-validation of variable importance
 cross_validate_variable_importance <- function(num_iterations = 10, model_weights, xgboost_model, rf_model, maxent_model) {
   
@@ -711,7 +711,7 @@ ggplot(final_var_contributions_all, aes(x = reorder(variable, Weighted_Contribut
   theme_bw() +
   theme(legend.position = "none")
 
-#-----------------------------Generate Response Curves----------------------------------
+#-------------------------------------------Generate Response Curves--------------------------------------------
 # Initialize a placeholder for all response curves data
 all_response_data <- data.frame()
 
@@ -789,7 +789,7 @@ ggplot(all_response_data, aes(x = Value, y = Predicted_Probability)) +
     axis.text = element_text(size = 8),
     axis.title = element_text(size = 10)
   )
-#------------------Model Weight Computation for Future Prediction------------------------
+#------------------------------Model Weight Computation for Future Predictions-------------------------------
 # Define model weights based on AUCs (ensure you have these AUC values from training)
 xgb_auc <- 0.935  # Replace with actual AUC of XGBoost
 rf_auc <- 0.957   # Replace with actual AUC of Random Forest
@@ -803,13 +803,13 @@ maxent_weight <- maxent_auc / total_auc
 
 cat("Weights: XGBoost =", xgb_weight, ", RF =", rf_weight, ", Maxent =", maxent_weight, "\n")
 
-#--------------Future Prediction 2041-2060 SSP 126 ----------------------------------
+#################################### Future Prediction 2041-2060 SSP 126 #####################################
 #Load environmental variables of future climate scenario SSP1-2.6
 env_variables_Future_126_path <- "F:/EVS_126"
 # Load all the raster files
 env_files126 <- list.files(env_variables_Future_126_path, pattern = "\\.tif$", full.names = TRUE)
 
-###################Align and resample environmental raster files######################
+#################################### Align and resample environmental raster files###########################
 # Load the first raster as a reference for extent and resolution
 ref_raster126 <- rast(env_files126[1])
 # Function to check extents and reproject if necessary
@@ -845,7 +845,7 @@ env_layers126 <- rast(aligned_rasters126)
 print(env_layers126)
 summary(env_layers126)
 
-############## Weighted Ensemble Future 126 Prediction ##########################
+###################################### Weighted Ensemble Future 126 Prediction #################################
 # Predict suitability using XGBoost
 cat("Predicting suitability using XGBoost...\n")
 xgb_suitability126 <- terra::predict(
@@ -886,9 +886,9 @@ cat("Final suitability map saved to:", output_file, "\n")
 # Plot the ensemble suitability
 plot(ensemble_suitability126, main = "Future Habitat Suitability (SSP 126)")
 
-#--------------------------Combined Future 585 Weighted Model---------------------------
+#----------------------------------------Combined Future 585 Weighted Model--------------------------------
 
-################Future Prediction 2041-2060 SSP 585 ####################################
+##############################  Future Prediction 2041-2060 SSP 585 ########################################
 #Load environmental variables of future climate scenario SSP1-2.6
 env_variables_Future_585_path <- "F:/EVS_585"
 # Load all the raster files
@@ -936,7 +936,7 @@ print(names(env_layers585))
 print(env_layers585)
 summary(env_layers585)
 
-############# Weighted Ensemble Future SSP 585 Prediction ##########################
+################################# Weighted Ensemble Future SSP 585 Prediction ####################################
 # Predict suitability using XGBoost
 cat("Predicting suitability using XGBoost...\n")
 xgb_suitability585 <- terra::predict(
@@ -976,9 +976,9 @@ cat("Final suitability map saved to:", output_file, "\n")
 
 # Plot the ensemble suitability
 plot(ensemble_suitability585, main = "Future Habitat Suitability (SSP 585)")
-################################################################################
+##############################################################################################################
 
-# ___________________________________END__________________________________
+# ______________________________________________________END_____________________________________________________
 
 
 
