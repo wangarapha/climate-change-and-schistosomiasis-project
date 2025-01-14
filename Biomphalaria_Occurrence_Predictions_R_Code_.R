@@ -972,8 +972,31 @@ cat("Final suitability map saved to:", output_file, "\n")
 # Plot the ensemble suitability
 plot(ensemble_suitability585, main = "Future Habitat Suitability (SSP 585)")
 ##############################################################################################################
+#-----------------------------Extract summary statistics of environmental variables--------------------------
+# Extract environmental data for presence points
+occ_env_data <- terra::extract(env_layers, occ_vector)
+occ_env_data <- na.omit(occ_env_data)  # Remove NA values
+print(head(occ_env_data))  # Verify the extracted data
+view(occ_env_data)
+# Combine the extracted values with the occurrence data
+final_data <- cbind(occurrence_All, occ_env_data)
+Biomphalaria_ext_Data <- as.data.frame(final_data)
+view(Biomphalaria_ext_Data)
+# Determining Descriptives statistics Bulinus Species
+#Remove NAs in the data set 
+Biomphalaria_Data <- na.omit(Biomphalaria_ext_Data)
+view(Biomphalaria_Data)
+# Specify the variables of interest
+Biomphalaria_stats <- Biomphalaria_Data %>%
+  summarise(across(c(bio1, bio10, bio11, bio12, bio13, bio14, bio15, bio16, bio17, bio18, bio19, bio2, bio3, bio4, 
+                     bio5, bio6, bio7, bio8, bio9, Clay, DW, Elevation, NDVI, Sand, Silt, Slope), 
+                   list(mean = mean, sd = sd, min = min, max = max)))
+view(Biomphalaria_stats)
+write.csv(Biomphalaria_stats, "F:/Model_Outputs/Biomphalaria_stats.csv", row.names = FALSE)
+##################################################################################################################                       
 
 # ______________________________________________________END_____________________________________________________
+
 
 
 
