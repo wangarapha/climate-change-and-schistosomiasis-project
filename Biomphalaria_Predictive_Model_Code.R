@@ -569,7 +569,7 @@ writeRaster(combined_raster, filename = "combined_model_Biomphalaria.tif", overw
 # Print final results
 cat("\nModel weights (based on mean AUCs):\n")
 print(model_weights)
-cat("\nCombined model prediction saved as 'combined_model_prediction_XGB_F.tif'\n")
+cat("\nCombined model prediction saved as 'combined_model_Biomphalaria.tif'\n")
 
 #---------------------------------------Crossvalidation variable importance---------------------------------------
 # Function for cross-validation of variable importance
@@ -701,7 +701,7 @@ ggplot(final_var_contributions_all, aes(x = reorder(variable, Weighted_Contribut
   scale_fill_gradient(low = "pink", high = "darkred") +  # Gradient color
   scale_y_continuous(expand = c(0, 0)) +  # Remove space between bars and axis
   scale_x_discrete(labels = custom_labels) +  # Relabel variables
-  labs(title = "Variable Contribution to Weighted Mean Suitability Model for Bulinus spp",
+  labs(title = "Variable Contribution to Weighted Mean Suitability Model for Biomphalaria spp.",
        x = "Variable", y = "Weighted Contribution (%)") +
   theme_bw() +
   theme(legend.position = "none")
