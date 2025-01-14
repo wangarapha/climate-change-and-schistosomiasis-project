@@ -1,0 +1,34 @@
+// Load the shapefile
+var roi = ee.FeatureCollection('projects/ee-wangarapha/assets/LVB');  // Replace with your asset path
+
+// Center the map on the shapefile
+Map.centerObject(roi, 8);  // Adjust zoom level as needed
+
+// Visualize the shapefile on the map
+Map.addLayer(roi, {color: 'red'}, 'Region of Interest');
+
+//Load the MODIS NDVI Image Collection
+var modis = ee.ImageCollection("MODIS/006/MOD13Q1")
+              .filterDate('2023-01-01', '2023-12-31')  // Filter for 2023
+              .select('NDVI')  // Select the NDVI band
+              .map(function(image) {
+                return image.clip(roi);  // Clip using the shapefile
+              });
+// Calculate Mean NDVI
+var meanNdvi = modis.mean();
+
+// Visualize the NDVI
+var ndviVis = {
+  min: 0,
+  max: 9000,
+  palette: ['blue', 'white', 'green']
+};
+
+Map.addLayer(meanNdvi, ndviVis, 'Mean NDVI (2023)');
+// Export final product
+Export.image.toDrive({
+  image: meanNdvi,
+  description: 'Mean_NDVI_2023',
+  scale: 250,
+  region: roi.geometry().bounds(),  // Export based on the shapefile's bounds
+  maxPixels: 1e13
