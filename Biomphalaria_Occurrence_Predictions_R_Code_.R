@@ -971,7 +971,7 @@ cat("Final suitability map saved to:", output_file, "\n")
 
 # Plot the ensemble suitability
 plot(ensemble_suitability585, main = "Future Habitat Suitability (SSP 585)")
-##############################################################################################################
+
 #-----------------------------Extract summary statistics of environmental variables--------------------------
 # Extract environmental data for presence points
 occ_env_data <- terra::extract(env_layers, occ_vector)
