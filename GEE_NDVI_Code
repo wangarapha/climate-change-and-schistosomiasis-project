@@ -1,5 +1,5 @@
 // Load the shapefile
-var roi = ee.FeatureCollection('projects/ee-wangarapha/assets/LVB');  // Replace with your asset path
+var roi = ee.FeatureCollection('projects/ee-wangarapha/assets/LVB');
 
 // Center the map on the shapefile
 Map.centerObject(roi, 8);  // Adjust zoom level as needed
