@@ -1,6 +1,6 @@
-#R code for Biomphalaria spp. habitata suitablilty analysis and prediction in the Lake Victoria Basin (LVB)
+# R code for Biomphalaria spp. habitata suitablilty analysis and prediction in the Lake Victoria Basin (LVB)
 
-#Climate change drives small scale changes in snail habitat suitability and Schistosomiasis Risk in the Lake Victoria Basin in Sub-Saharan Africa
+# Climate change drives small scale changes in snail habitat suitability and Schistosomiasis Risk in the Lake Victoria Basin in Sub-Saharan Africa
 
 #-------------------------------------------------Load necessary libraries-------------------------------------------
 # Load necessary libraries
