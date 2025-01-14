@@ -1,6 +1,6 @@
 # R code for Bulinus spp. habitat suitablilty analysis and prediction in the Lake Victoria Basin (LVB)
 
-#Climate change drives small scale changes in snail habitat suitability and Schistosomiasis Risk in the Lake Victoria Basin in Sub-Saharan Africa
+# Climate change drives small scale changes in snail habitat suitability and Schistosomiasis Risk in the Lake Victoria Basin in Sub-Saharan Africa
 
 #-------------------------------------------------Load necessary libraries-------------------------------------------
 # Load necessary libraries
@@ -987,12 +987,14 @@ write.csv(Bulinus_ext_Data, "F:/Model_Outputs/Bulinus_Extract_Data.csv", row.nam
 ##################################################################################################################
 # Determining Descriptives statistics Bulinus Species
 #Remove NAs in the data set 
-Bulinus_ext_Data <- na.omit(Bulinus_Data)
+Bulinus_Data <- na.omit(Bulinus_ext_Data)
 view(Bulinus_Data)
 names(Bulinus_Data)
 # Specify the variables of interest
 Bulinus_stats <- Bulinus_ext_Data %>%
-  summarise(across(c(bio1, bio10, bio11, bio12, bio13, bio14, bio15, bio16, bio17, bio18, bio19, bio2, bio3, bio4, bio5, bio6, bio7, bio8, bio9, Clay, DW, Elevation, NDVI, Sand, Silt, Slope), list(mean = mean, sd = sd, min = min, max = max)))
+  summarise(across(c(bio1, bio10, bio11, bio12, bio13, bio14, bio15, bio16, bio17, bio18, bio19, bio2, bio3, 
+                     bio4, bio5, bio6, bio7, bio8, bio9, Clay, DW, Elevation, NDVI, Sand, Silt, Slope), 
+                   list(mean = mean, sd = sd, min = min, max = max)))
 view(Bulinus_stats)
 write.csv(Bulinus_stats, "F:/Model_Outputs/Bulinus_stats.csv", row.names = FALSE)
 ##################################################################################################################                       
