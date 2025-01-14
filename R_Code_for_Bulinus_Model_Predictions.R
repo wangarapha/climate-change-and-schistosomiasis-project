@@ -1,4 +1,4 @@
-#R code and data files for climate change and schistosomiasis in Lake victoria basin project
+# R code for Bulinus spp. habitat suitablilty analysis and prediction in the Lake Victoria Basin (LVB)
 
 #Climate change drives small scale changes in snail habitat suitability and Schistosomiasis Risk in the Lake Victoria Basin in Sub-Saharan Africa
 
