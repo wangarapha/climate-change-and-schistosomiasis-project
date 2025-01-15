@@ -786,9 +786,9 @@ ggplot(all_response_data, aes(x = Value, y = Predicted_Probability)) +
   )
 #------------------------------Model Weight Computation for Future Predictions-------------------------------
 # Define model weights based on AUCs (ensure you have these AUC values from training)
-xgb_auc <- 0.935  # Replace with actual AUC of XGBoost
-rf_auc <- 0.957   # Replace with actual AUC of Random Forest
-maxent_auc <- 0.950  # Replace with actual AUC of Maxent
+xgb_auc <- 0.924  # Replace with actual AUC of XGBoost
+rf_auc <- 0.941   # Replace with actual AUC of Random Forest
+maxent_auc <- 0.943  # Replace with actual AUC of Maxent
 
 # Calculate weights
 total_auc <- xgb_auc + rf_auc + maxent_auc
