@@ -2,6 +2,7 @@
 
 # Climate change drives small scale changes in snail habitat suitability and Schistosomiasis Risk in the Lake Victoria Basin in Sub-Saharan Africa
 
+# Code writen by Tabo Zadoki and Rapheal Wangalwa
 #-------------------------------------------------Load necessary libraries-------------------------------------------
 # Load necessary libraries
 library(terra)         # For handling spatial and raster data
